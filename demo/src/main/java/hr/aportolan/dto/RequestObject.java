@@ -4,11 +4,23 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import hr.aportolan.domain.Message;
 import hr.aportolan.domain.User;
 import hr.aportolan.exceptions.StandardException;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestObject<T> extends RequestResponseObject<T> {
+
+	public RequestObject() {
+	}
+
+	public RequestObject(T payload, int offset, int limit) {
+		super.payload = payload;
+		this.offset = offset;
+		this.limit = limit;
+	}
 
 	private int offset;
 	private int limit;
@@ -31,13 +43,14 @@ public class RequestObject<T> extends RequestResponseObject<T> {
 
 	public void amIValid(ValidationType validationType) {
 		switch (validationType) {
-		case SAVE_MESSAGES:
+
 		case DELETE_MESSAGES: {
 			checkIfListIsValid();
 			if (!(((List<?>) payload).get(0) instanceof Message))
 				throw new StandardException("Payload type is invalid!");
 			break;
 		}
+		case SAVE_MESSAGES:
 		case SAVE_ALL_MESSAGES: {
 			if (!(payload instanceof Message))
 				throw new StandardException("Payload type is invalid!");
@@ -80,7 +93,7 @@ public class RequestObject<T> extends RequestResponseObject<T> {
 		if (payload instanceof List<?>) {
 			if (((List<?>) payload) == null || ((List<?>) payload).isEmpty())
 				throw new StandardException("Payload is null or empty!");
-
+			return;
 		}
 		throw new StandardException("Invalid payload in request!");
 	}

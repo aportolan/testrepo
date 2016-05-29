@@ -46,11 +46,18 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 	public void saveByUserData(Message message) {
 
 		Query query;
-		if (message.getUser() == null && message.getUser().getTag() == null)
-			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME);
-		else {
+
+		if (message.getUser() != null && message.getUser().getUid() == 0) {
+			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID_NAME)
+					.setParameter("user.uid", message.getUser().getTag());
+		} else if (message.getUser() != null && message.getUser().getTag() != null) {
 			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME)
 					.setParameter("user.tag", message.getUser().getTag());
+		} else if (message.getUser() != null && message.getUser().getName() != null) {
+			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME_NAME)
+					.setParameter("user.name", message.getUser().getTag());
+		} else {
+			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME);
 		}
 		query.setParameter("title", message.getTitle()).setParameter("body", message.getBody())
 				.setParameter("validity", message.getValidity()).executeUpdate();

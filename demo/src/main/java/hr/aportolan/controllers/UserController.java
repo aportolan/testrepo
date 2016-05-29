@@ -3,6 +3,7 @@ package hr.aportolan.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,28 +22,28 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@RequestMapping("/save")
-	public ResponseObject<User> save(RequestObject<User> ro) {
+	public ResponseObject<User> save(@RequestBody RequestObject<User> ro) {
 		ro.amIValid(ValidationType.SAVE_USERS);
 		return new ResponseObject<User>(true, userRepository.save(ro.getPayload()));
 	}
 
 	@RequestMapping("/saveAll")
-	public ResponseObject<VoidData> saveAll(RequestObject<User> ro) {
+	public ResponseObject<VoidData> saveAll(@RequestBody RequestObject<List<User>> ro) {
 		ro.amIValid(ValidationType.SAVE_ALL_USERS);
 		userRepository.save(ro.getPayload());
 		return new ResponseObject<>(true);
 	}
 
 	@RequestMapping("/delete")
-	public ResponseObject<VoidData> delete(RequestObject<List<User>> ro) {
-		ro.amIValid(ValidationType.SAVE_ALL_USERS);
+	public ResponseObject<VoidData> delete(@RequestBody RequestObject<List<User>> ro) {
+		ro.amIValid(ValidationType.DELETE_USERS);
 		return new ResponseObject<>(true);
 
 	}
 
 	@RequestMapping("/get")
-	public ResponseObject<List<User>> get(RequestObject<User> ro) {
-		ro.amIValid(ValidationType.SAVE_ALL_USERS);
+	public ResponseObject<List<User>> get(@RequestBody RequestObject<User> ro) {
+		ro.amIValid(ValidationType.GET_USERS);
 		return new ResponseObject<List<User>>(true,
 				userRepository.selectUsersByCriteria(ro.getPayload(), ro.getOffset(), ro.getLimit()));
 	}

@@ -109,6 +109,10 @@ public class User {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("uid", uid);
+		builder.append("name", name);
+		builder.append("tag", tag);
+		return builder.toString();
 	}
 }

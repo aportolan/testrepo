@@ -18,4 +18,5 @@ public interface CustomUserRepository {
 	 * @return {@link List} of {@link User}
 	 */
 	List<User> selectUsersByCriteria(User payload, int offset, int limit);
+
 }

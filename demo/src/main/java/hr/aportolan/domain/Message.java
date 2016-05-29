@@ -25,7 +25,9 @@ import hr.aportolan.enums.CustomQueries;
 @Entity
 @NamedNativeQueries(value = {
 		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES),
-		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG) })
+		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG),
+		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID),
+		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME) })
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@jsonMid")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Message {
@@ -130,7 +132,17 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("mid", mid);
+		builder.append("title", title);
+		builder.append("body", body);
+		builder.append("validity", validity);
+		if (user != null) {
+			builder.append("user.uid", user.getUid());
+			builder.append("user.name", user.getName());
+			builder.append("user.tag", user.getTag());
+		}
+		return builder.toString();
 	}
 
 }
