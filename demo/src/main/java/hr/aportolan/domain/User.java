@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 // TODO : tag je unique ili klasifikacija ??
 // @Table(indexes = { @Index(columnList = "tag") })
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "messages" })
 public class User {
 
 	public User() {
@@ -48,6 +48,7 @@ public class User {
 	private String name;
 	@Column(nullable = false, unique = false)
 	private String tag;
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private List<Message> messages;
 

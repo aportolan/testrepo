@@ -9,6 +9,7 @@ import org.jsondoc.core.annotation.ApiResponseObject;
 import org.jsondoc.core.pojo.ApiStage;
 import org.jsondoc.core.pojo.ApiVisibility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +35,7 @@ public class UserController {
 	@Autowired
 	private InitDataLoader initDataLoader;
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiMethod(description = "Saves user")
 	@Transactional
 	@ApiResponseObject
@@ -44,7 +45,7 @@ public class UserController {
 	}
 
 	@ApiMethod(description = "Saves multiple users")
-	@RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponseObject
 	public ResponseObject<VoidData> saveAll(@ApiBodyObject @RequestBody RequestObject<List<User>> ro) {
 		ro.amIValid(ValidationType.SAVE_ALL_USERS);
@@ -53,7 +54,7 @@ public class UserController {
 	}
 
 	@ApiMethod(description = "Deletes one or more users")
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
 	@ApiResponseObject
 	public ResponseObject<User> delete(@ApiBodyObject @RequestBody RequestObject<List<User>> ro) {
@@ -63,7 +64,7 @@ public class UserController {
 
 	}
 
-	@ApiMethod(description = "Gets users by one of the user parameters")
+	@ApiMethod(description = "Gets users by one of the user parameters", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/get", method = RequestMethod.POST)
 	@ApiResponseObject
 	public ResponseObject<List<User>> get(@ApiBodyObject @RequestBody RequestObject<User> ro) {

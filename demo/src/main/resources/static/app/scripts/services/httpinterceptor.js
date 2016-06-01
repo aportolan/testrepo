@@ -12,8 +12,8 @@ $provide.module('usermessageApp')
 
      return {
 		'request': function(config) {
-			config.headers['Accept'] = 'application/json;charset=UTF-8';
-			config.headers['Content-Type']= 'application/json;charset=UTF-8';
+			config.headers['Accept'] = 'application/json';
+			config.headers['Content-Type']= 'application/json';
 			config.method='POST';
      			return config;
     		}

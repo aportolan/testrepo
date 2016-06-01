@@ -54,7 +54,8 @@ angular.module('usermessageApp')
 		userFactory.saveUsers(user).success(successPostCallbackUsers).error(errorCallback);
 	    };
 	    $scope.deleteUsers = function (user) {
-		userFactory.deleteUsers(user).success(successPostCallbackUsers).error(errorCallback);
+		var usersArr = [user];
+		userFactory.deleteUsers(usersArr).success(successPostCallbackUsers).error(errorCallback);
 		$scope.userSelected = false;
 	    };
 	    $scope.initLoadUsers = function () {
@@ -116,8 +117,13 @@ angular.module('usermessageApp')
                 message.editMode = !message.editMode;
             }; 
 	    var successCallbackMessages = function (data, status, headers, config) {
-		data.payload.user.messages = null;
-		var message = {mid:"",title:"",body:"",validity:"",user:data.payload.user};
+		var user = {};
+		if(data.payload ==null || data.payload.user == null)
+			user.uid=$scope.selectedUser.uid;
+		else
+			user=data.payload.user;
+		user.messages = null;
+		var message = {mid:"",title:"",body:"",validity:"",user:user};
 		notificationFactory.success();
 		pagingPositionMessages = 0;
 		return messageFactory.getMessages(message,pagingPositionMessages).success(getMessagesSuccessCallback).error(errorCallback);
@@ -134,7 +140,7 @@ angular.module('usermessageApp')
 		messageFactory.saveMessages($scope.message).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.saveAllMessages = function () {
-		$scope.message.user = null;
+		$scope.message.user = $scope.selectedUser;
 		messageFactory.saveAllMessages($scope.message).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.updateMessages = function (message) {
@@ -145,7 +151,10 @@ angular.module('usermessageApp')
 		messageFactory.deleteMessages(messageArray).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.refreshMessages = function () {
-		$scope.searchMessage = {user:{uid:$scope.selectedUser.uid}};
+		$scope.searchMessage == null
+			$scope.searchMessage = {user:{uid:$scope.selectedUser.uid}};
+		else
+			$scope.searchMessage.user={uid:$scope.selectedUser.uid};
 	        if($scope.searchMessage!=null){
 			if($scope.searchMessage.mid=="")
 				$scope.searchMessage.mid = null;

@@ -69,13 +69,17 @@ public class RequestObject<T> extends RequestResponseObject<T> {
 		case GET_BY_USER_MESSAGES: {
 			if (!(payload instanceof Message))
 				throw new StandardException("Payload type is invalid!");
-			User user = ((Message) payload).getUser();
-			boolean uidIn = user.getUid() != 0;
-			boolean nameIn = user.getName() != null && !user.getName().equals("");
-			boolean tagIn = user.getTag() != null && !user.getTag().equals("");
-			boolean invalid = (uidIn && nameIn) || (uidIn && tagIn) || (nameIn && tagIn);
-			if (invalid)
-				throw new StandardException("Only one search term can be applicable (uid or name or tag)!");
+			// User user = ((Message) payload).getUser();
+			// boolean uidIn = user.getUid() != 0;
+			// boolean nameIn = user.getName() != null &&
+			// !user.getName().equals("");
+			// boolean tagIn = user.getTag() != null &&
+			// !user.getTag().equals("");
+			// boolean invalid = (uidIn && nameIn) || (uidIn && tagIn) ||
+			// (nameIn && tagIn);
+			// if (invalid)
+			// throw new StandardException("Only one search term can be
+			// applicable (uid or name or tag)!");
 
 			break;
 		}
