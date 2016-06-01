@@ -2,33 +2,33 @@ package hr.aportolan.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jsondoc.core.annotation.ApiObject;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import hr.aportolan.enums.CustomQueries;
+import hr.aportolan.util.IsoDateDeserializer;
+import hr.aportolan.util.IsoDateSerializer;
 
+@ApiObject
 @Entity
 @NamedNativeQueries(value = {
 		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES),
 		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG),
 		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID),
 		@NamedNativeQuery(name = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME_NAME, query = CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME) })
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@jsonMid")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Message {
 
@@ -61,10 +61,12 @@ public class Message {
 	@Column(nullable = false, unique = false)
 	private String body;
 
+	@JsonSerialize(using = IsoDateSerializer.class)
+	@JsonDeserialize(using = IsoDateDeserializer.class)
 	@Column(nullable = false, unique = false)
 	private Date validity;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	// @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "uid")
 	private User user;
 

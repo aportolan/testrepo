@@ -1,7 +1,9 @@
 package hr.aportolan.dto;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jsondoc.core.annotation.ApiObject;
 
+@ApiObject
 public class ResponseObject<T> extends RequestResponseObject<T> {
 
 	public ResponseObject(String errorMessage) {

@@ -66,7 +66,7 @@ public class ControllerIntegrationTests {
 			req = new RequestObject<Object>(al, 0, 1);
 		} else
 			req = new RequestObject<Object>(instance, 0, 1);
-		System.out.println(req);
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		String jsonValue = objectMapper.writeValueAsString(req);
 

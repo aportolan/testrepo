@@ -55,12 +55,12 @@
 		<Logger name="hr.aportolan" level="trace" additivity="false">
 			<AppenderRef ref="ASYNC" />
 		</Logger>
-		<Logger name="org.springframework" level="trace" additivity="false">
+		<Logger name="org.springframework.security" level="trace" additivity="false">
 			<AppenderRef ref="ASYNC" />
 		</Logger>
-		<Logger name="org.hibernate.SQL" level="debug" additivity="false">
-			<AppenderRef ref="ASYNC" />
-		</Logger>
+<!-- 		<Logger name="org.hibernate.SQL" level="debug" additivity="false"> -->
+<!-- 			<AppenderRef ref="ASYNC" /> -->
+<!-- 		</Logger> -->
 		<Root level="error">
 			<AppenderRef ref="ASYNC" />
 		</Root>

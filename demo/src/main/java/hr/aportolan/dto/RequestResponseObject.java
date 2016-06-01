@@ -1,7 +1,9 @@
 package hr.aportolan.dto;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jsondoc.core.annotation.ApiObject;
 
+@ApiObject
 public abstract class RequestResponseObject<T> {
 	protected T payload;
 

@@ -3,6 +3,7 @@ package hr.aportolan.dto;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jsondoc.core.annotation.ApiObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,6 +11,7 @@ import hr.aportolan.domain.Message;
 import hr.aportolan.domain.User;
 import hr.aportolan.exceptions.StandardException;
 
+@ApiObject
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestObject<T> extends RequestResponseObject<T> {
 
@@ -50,24 +52,34 @@ public class RequestObject<T> extends RequestResponseObject<T> {
 				throw new StandardException("Payload type is invalid!");
 			break;
 		}
-		case SAVE_MESSAGES:
-		case SAVE_ALL_MESSAGES: {
+		case SAVE_MESSAGES: {
 			if (!(payload instanceof Message))
 				throw new StandardException("Payload type is invalid!");
 			User user = ((Message) payload).getUser();
-			if (user.getUid() == 0 && user.getTag() == null)
+			if (user == null || user.getUid() == 0 && (user.getTag() == null || user.getTag().equals("")))
 				throw new StandardException("User in payload must have uid or tag defined!");
+			boolean body = (((Message) payload).getBody() == null || ((Message) payload).getBody().length() == 0);
+			boolean titl = (((Message) payload).getTitle() == null || ((Message) payload).getTitle().length() == 0);
+			boolean val = ((Message) payload).getValidity() == null;
+
+			if (body || titl || val)
+				throw new StandardException("Some fields are empty!");
 			break;
 		}
 		case GET_BY_USER_MESSAGES: {
 			if (!(payload instanceof Message))
 				throw new StandardException("Payload type is invalid!");
 			User user = ((Message) payload).getUser();
-			if (user.getUid() == 0)
-				throw new StandardException("User in payload must have uid defined!");
+			boolean uidIn = user.getUid() != 0;
+			boolean nameIn = user.getName() != null && !user.getName().equals("");
+			boolean tagIn = user.getTag() != null && !user.getTag().equals("");
+			boolean invalid = (uidIn && nameIn) || (uidIn && tagIn) || (nameIn && tagIn);
+			if (invalid)
+				throw new StandardException("Only one search term can be applicable (uid or name or tag)!");
+
 			break;
 		}
-
+		case SAVE_ALL_MESSAGES:
 		case GET_USERS:
 
 			break;
@@ -79,8 +91,11 @@ public class RequestObject<T> extends RequestResponseObject<T> {
 		case SAVE_USERS: {
 			if (!(payload instanceof User))
 				throw new StandardException("Payload type is invalid!");
-			if (((User) payload).getUid() == 0)
-				throw new StandardException("User in payload must have uid defined!");
+			boolean name = (((User) payload).getName() == null || ((User) payload).getName().length() == 0);
+			boolean tag = (((User) payload).getTag() == null || ((User) payload).getTag().length() == 0);
+
+			if (name || tag)
+				throw new StandardException("Some fields are empty!");
 			break;
 		}
 

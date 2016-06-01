@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<link rel='shortcut icon' type='image/x-icon'
+	href='static/app/favicon.ico' />
+<link rel="stylesheet" href="static/app/styles/main.css">
+<link rel="stylesheet" href="static/bower_components/toastr/toastr.css">
+<link rel="stylesheet"
+	href="static/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet"
+	href="static/bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet"
+	href="static/bower_components/bootstrap/dist/css/bootstrap-theme.css">
+<link rel="stylesheet"
+	href="static/bower_components/components-font-awesome/css/font-awesome.css">
+<link rel="stylesheet"
+	href="static/bower_components/angular-datepicker/dist/angular-datepicker.css">
+<!-- endbuild -->
+</head>
+<body ng-app="usermessageApp">
+	<!--[if lte IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+	<div ng-controller="operationsCtrl" ng-cloak>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="jumbotron">
+						<h2>Users and messages</h2>
+						<p>First table is for users, second (hidden) table is for
+							messages. Users can be filtered, paged, created updated and
+							deleted. Clicking on one of the envelopes, messages grid will be
+							populated. It has the same functionalities as users grid, bur it
+							can also add one message to many users (by one of the
+							parameters).</p>
+						<p>
+							<a class="btn btn-primary btn-large"
+								href="jsondoc-ui.html?url=${jsondoc.basePath}/${project.name}/jsondoc">Docs
+								for REST</a>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div>
+						<table class="table">
+							<tr class="active">
+								<td colspan="4"><h3>Search users</h3></td>
+							</tr>
+							<tr>
+								<th></th>
+								<th>Uid</th>
+								<th>Name</th>
+								<th>Tag</th>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<i title="Initial user insert(heavy resource operation)"
+											class="fa fa-users fa-2x" ng-click="initLoadUsers()"
+											ng-confirm-click='This action will insert large number of users (approx. 100.000 ) in background thread.'></i>
+										<i title="Refresh data" class="fa fa-refresh fa-2x"
+											ng-click="refreshUsers()"></i>
+									</div>
+								</td>
+								<td><input ng-model="searchUser.uid" /></td>
+								<td><input ng-model="searchUser.name" /></td>
+								<td><input ng-model="searchUser.tag" /></td>
+							</tr>
+						</table>
+					</div>
+					<div>
+						<table class="table">
+							<tr>
+								<th>
+									<div>
+										<i class="fa fa-plus-circle fa-2x"
+											ng-click="toggleAddModeUsers()"></i> <i
+											title="Next data set (10 rows)"
+											class="fa fa-arrow-circle-down fa-2x"
+											ng-click="pagingUsersNext()"></i> <i
+											title="Previous data set (10 rows)"
+											class="fa fa-arrow-circle-up fa-2x"
+											ng-click="pagingUsersPrevious()"></i>
+									</div>
+								</th>
+								<th>Uid</th>
+								<th>Name</th>
+								<th>Tag</th>
+								<th>Get messages:</th>
+							</tr>
+							<tr ng-show="addModeUsers">
+								<td>
+									<div>
+										<div>
+											<i title="Add new data" class="fa fa-floppy-o fa-2x"
+												ng-click="addUsers()"></i> <i title="Close add form"
+												class="fa fa-times fa-2x" ng-click="toggleAddModeUsers()"></i>
+										</div>
+									</div>
+								</td>
+								<td></td>
+								<td><input ng-model="user.name" /></td>
+								<td><input ng-model="user.tag" /></td>
+								<td></td>
+							</tr>
+							<tr ng-repeat="user in users | orderBy:'uid':true">
+								<td>
+									<div ng-show="user.editMode == null || user.editMode == false">
+										<div>
+											<i title="Toggle row edit mode"
+												class="fa fa-pencil-square-o fa-2x"
+												ng-click="toggleEditModeUsers(user)"></i> <i
+												title="Delete row" class="fa fa-trash-o fa-2x"
+												ng-click="deleteUsers(user)"></i>
+										</div>
+									</div>
+									<div ng-show="user.editMode == true">
+										<div class="btn-group">
+											<i title="Update row" class="fa fa-floppy-o fa-2x"
+												ng-click="updateUsers(user)"></i> <i
+												title="Toggle row edit mode" class="fa fa-times fa-2x"
+												ng-click="toggleEditModeUsers(user)"></i>
+										</div>
+									</div>
+								</td>
+								<td>{{user.uid}}</td>
+								<td><span
+									ng-show="user.editMode == null || user.editMode == false">{{user.name}}</span>
+									<input ng-model="user.name" ng-show="user.editMode == true" />
+								</td>
+								<td><span
+									ng-show="user.editMode == null || user.editMode == false">{{user.tag}}</span>
+									<input ng-model="user.tag" ng-show="user.editMode == true" />
+								</td>
+								<th>
+									<div>
+										<i title="Get referential data" class="fa fa-envelope fa-2x"
+											ng-click="getMessagesForUser(user)"></i>
+									</div>
+								</th>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-6" ng-show="userSelected == true">
+					<div>
+						<table class="table">
+							<tr class="active">
+								<td colspan="4"><h3>Search messages</h3></td>
+							</tr>
+							<tr>
+								<th></th>
+								<th>Mid</th>
+								<th>Title</th>
+								<th>Body</th>
+								<th>Validity</th>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<i title="Refresh data" class="fa fa-refresh fa-2x"
+											ng-click="refreshMessages()"></i>
+									</div>
+								</td>
+								<td><input ng-model="searchMessage.mid" /></td>
+								<td><input ng-model="searchMessage.title" /></td>
+								<td><input ng-model="searchMessage.body" /></td>
+								<td><input custom-date-input
+									ng-model="searchMessage.validity" type="datetime-local"
+									placeholder="HH:mm:ss dd.MM.yyyy" /></td>
+							</tr>
+						</table>
+					</div>
+					<div>
+						<table class="table">
+							<tr>
+								<th>
+									<div>
+										<i class="fa fa-plus-circle fa-2x"
+											ng-click="toggleAddModeMessages()"></i> <i
+											title="Next data set (10 rows)"
+											class="fa fa-arrow-circle-down fa-2x"
+											ng-click="pagingMessagesNext()"></i> <i
+											title="Previous data set (10 rows)"
+											class="fa fa-arrow-circle-up fa-2x"
+											ng-click="pagingMessagesPrevious()"></i>
+									</div>
+								</th>
+								<th>Mid</th>
+								<th>Title</th>
+								<th>Body</th>
+								<th>Validity</th>
+							</tr>
+							<tr ng-show="addModeMessages">
+								<td>
+									<div class="btn-toolbar">
+										<div class="btn-group">
+											<i title="Add new data" class="fa fa-floppy-o fa-2x"
+												ng-click="addMessages()"></i> <i title="Add for all users"
+												class="fa fa-rss fa-2x" ng-click="saveAllMessages()"></i> <i
+												title="Close add form" class="fa fa-times fa-2x"
+												ng-click="toggleAddModeMessages()"></i>
+										</div>
+									</div>
+								</td>
+								<td></td>
+								<td><input ng-model="message.title" /></td>
+								<td><input ng-model="message.body" /></td>
+								<td><input custom-date-input ng-model="message.validity"
+									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy" /></td>
+								<td></td>
+							</tr>
+							<tr ng-repeat="message in messages | orderBy:'mid':true">
+								<td>
+									<div
+										ng-show="message.editMode == null || message.editMode == false">
+										<div class="btn-group">
+											<i title="Toggle row edit mode"
+												class="fa fa-pencil-square-o fa-2x"
+												ng-click="toggleEditModeMessages(message)"></i> <i
+												title="Delete row" class="fa fa-trash-o fa-2x"
+												ng-click="deleteMessages(message)"></i>
+										</div>
+									</div>
+									<div class="btn-toolbar" ng-show="message.editMode == true">
+										<div>
+											<i title="Update row" class="fa fa-floppy-o fa-2x"
+												ng-click="updateMessages(message)"></i> <i
+												title="Toggle row edit mode" class="fa fa-times fa-2x"
+												ng-click="toggleEditModeMessages(message)"></i>
+										</div>
+									</div>
+								</td>
+								<td>{{message.mid}}</td>
+								<td><span
+									ng-show="message.editMode == null || message.editMode == false">{{message.title}}</span>
+									<input ng-model="message.title"
+									ng-show="message.editMode == true" /></td>
+								<td><span
+									ng-show="message.editMode == null || message.editMode == false">{{message.body}}</span>
+									<input ng-model="message.body"
+									ng-show="message.editMode == true" /></td>
+								<td><span custom-date-input
+									ng-show="message.editMode == null || message.editMode == false">{{message.validity}}</span>
+									<input custom-date-input ng-model="message.validity"
+									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy"
+									ng-show="message.editMode == true" /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- build:js(.) scripts/vendor.js -->
+	<!-- bower:js -->
+	<script src="static/bower_components/jquery/dist/jquery.js"></script>
+	<script src="static/bower_components/angular/angular.js"></script>
+	<script
+		src="static/bower_components/angular-animate/angular-animate.js"></script>
+	<script
+		src="static/bower_components/angular-cookies/angular-cookies.js"></script>
+	<script
+		src="static/bower_components/angular-resource/angular-resource.js"></script>
+	<script src="static/bower_components/angular-route/angular-route.js"></script>
+	<script
+		src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script src="static/bower_components/angular-touch/angular-touch.js"></script>
+	<script src="static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script
+		src="static/bower_components/angular-datepicker/dist/ angular-datepicker.js"></script>
+	<script src="static/bower_components/jquery-ui/jquery-ui.js"></script>
+	<script src="static/bower_components/toastr/toastr.js"></script>
+	<script
+		src="static/bower_components/ng-stomp/dist/ng-stomp.standalone.min.js"></script>
+
+
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<!-- build:js({.tmp,app}) scripts/scripts.js -->
+	<script src="static/app/scripts/app.js"></script>
+	<script src="static/app/scripts/controllers/operations.js"></script>
+	<script src="static/app/scripts/services/userfactory.js"></script>
+	<script src="static/app/scripts/directives/ng-confirm-click.js"></script>
+	<script src="static/app/scripts/directives/custom-date-input.js"></script>
+	<script src="static/app/scripts/services/messagefactory.js"></script>
+	<script src="static/app/scripts/services/notificationfactory.js"></script>
+
+
+
+	<!-- endbuild -->
+</body>
+</html>

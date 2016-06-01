@@ -30,17 +30,20 @@ public class UserRepositoryImpl implements CustomUserRepository {
 		CriteriaQuery<User> getUsersByCriteria = cb.createQuery(User.class);
 		Root<User> e = getUsersByCriteria.from(User.class);
 		List<Predicate> predicatesOr = new ArrayList<>();
-		if (payload.getUid() != 0)
-			predicatesOr.add(cb.equal(e.get("uid"), payload.getUid()));
-		if (payload.getTag() != null)
-			predicatesOr.add(cb.or(cb.equal(e.<String> get("tag"), payload.getTag())));
-		if (payload.getName() != null)
-			predicatesOr
-					.add(cb.or(cb.like(cb.upper(e.<String> get("name")), "%" + payload.getName().toUpperCase() + "%")));
-
+		if (payload != null) {
+			if (payload.getUid() != 0)
+				predicatesOr.add(cb.equal(e.get("uid"), payload.getUid()));
+			if (payload.getTag() != null)
+				predicatesOr.add(cb.or(cb.equal(e.<String> get("tag"), payload.getTag())));
+			if (payload.getName() != null)
+				predicatesOr.add(
+						cb.or(cb.like(cb.upper(e.<String> get("name")), "%" + payload.getName().toUpperCase() + "%")));
+		}
 		getUsersByCriteria.where(predicatesOr.toArray(new Predicate[] {}));
-		return entityManager.createQuery(getUsersByCriteria).setFirstResult(offset).setMaxResults(limit)
+		List<User> u = entityManager.createQuery(getUsersByCriteria).setFirstResult(offset).setMaxResults(limit)
 				.getResultList();
+
+		return u;
 	}
 
 }

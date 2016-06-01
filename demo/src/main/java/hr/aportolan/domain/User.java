@@ -9,19 +9,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jsondoc.core.annotation.ApiObject;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+@ApiObject
 @Entity
-@Table(indexes = { @Index(columnList = "tag") })
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@jsonUid")
+// TODO : tag je unique ili klasifikacija ??
+// @Table(indexes = { @Index(columnList = "tag") })
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class User {
 
@@ -48,9 +46,9 @@ public class User {
 	private long uid;
 	@Column(nullable = false, unique = false)
 	private String name;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = false)
 	private String tag;
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private List<Message> messages;
 
 	public long getUid() {

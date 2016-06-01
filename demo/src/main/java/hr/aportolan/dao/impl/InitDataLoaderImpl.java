@@ -12,6 +12,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +27,22 @@ import hr.aportolan.enums.DefaultUsersSetup.UserNumber;
 public class InitDataLoaderImpl implements InitDataLoader {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private SimpMessagingTemplate template;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitDataLoaderImpl.class);
-	//
+
 	// @PostConstruct
-	// public void loadInitialUsers() {
-	// loadInitialUsers(UserNumber.USER_NUMBER);
-	// }
+	@Override
+	public void loadInitialUsers() {
+		Runnable task = () -> {
+
+			loadInitialUsers(UserNumber.USER_NUMBER);
+		};
+		Thread thread = new Thread(task);
+		thread.start();
+
+	}
 
 	@Override
 	public void loadInitialUsers(UserNumber userNumber) {
@@ -50,7 +60,7 @@ public class InitDataLoaderImpl implements InitDataLoader {
 			while (true) {
 				String name = namesBuffReader.readLine();
 				String lastName = lastNamesBuffReader.readLine();
-				System.out.println("Data:" + name + " " + lastName + " " + counter);
+
 				// no data or enough rows?? - break
 				if (name == null || lastName == null || counter == userNumber.getValue() + 1)
 					break;
@@ -62,7 +72,7 @@ public class InitDataLoaderImpl implements InitDataLoader {
 
 				namesList.add(name);
 				lastNamesList.add(lastName);
-				saveUser(name, lastName, counter);
+				saveUser(name, lastName, counter, userNumber);
 
 			}
 
@@ -92,7 +102,7 @@ public class InitDataLoaderImpl implements InitDataLoader {
 					break;
 
 				saveUser(namesList.get(rnd.nextInt(maxValueArray)), lastNamesList.get(rnd.nextInt(maxValueArray)),
-						counter);
+						counter, userNumber);
 
 				counter++;
 			}
@@ -100,11 +110,17 @@ public class InitDataLoaderImpl implements InitDataLoader {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 2)
-	private void saveUser(String name, String lastName, int rownum) {
+	private void saveUser(String name, String lastName, int rownum, UserNumber userNumber) {
+		if (rownum % 5000 == 0) {
+			double percentage = (double) rownum / (double) userNumber.getValue() * 100;
+			template.convertAndSend("/messageTopic/initLoad",
+					"Loaded " + rownum + " of " + userNumber.getValue() + "(" + percentage + ") users!");
+		}
+		LOGGER.debug("Data:{} {} {}", name, lastName, rownum);
 		User user = new User(
 				name == null ? RandomStringUtils.randomAlphabetic(10)
 						: name + " " + lastName == null ? RandomStringUtils.randomAlphabetic(10) : lastName,
-				name.substring(0, 1) + lastName + String.valueOf(rownum));
+				RandomStringUtils.randomNumeric(3));
 		try {
 			userRepository.save(user);
 		} catch (Exception e) {

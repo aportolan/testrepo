@@ -47,7 +47,7 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 
 		Query query;
 
-		if (message.getUser() != null && message.getUser().getUid() == 0) {
+		if (message.getUser() != null && message.getUser().getUid() != 0) {
 			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_UID_NAME)
 					.setParameter("user.uid", message.getUser().getTag());
 		} else if (message.getUser() != null && message.getUser().getTag() != null) {
@@ -57,7 +57,7 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_NAME_NAME)
 					.setParameter("user.name", message.getUser().getTag());
 		} else {
-			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_BY_TAG_NAME);
+			query = entityManager.createNamedQuery(CustomQueries.UPDATE_ALL_USER_MESSAGES_NAME);
 		}
 		query.setParameter("title", message.getTitle()).setParameter("body", message.getBody())
 				.setParameter("validity", message.getValidity()).executeUpdate();
@@ -96,6 +96,7 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 
 	@Override
 	public List<Message> getByUser(Message payload) {
+
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<Message> getByUser = cb.createQuery(Message.class);
@@ -104,10 +105,19 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 		List<Predicate> predicates = new ArrayList<>();
 		if (payload.getUser().getUid() != 0)
 			predicates.add(cb.equal(userJoin.<Long> get("uid"), payload.getUser().getUid()));
-		if (payload.getUser().getTag() != null)
-			predicates.add(cb.equal(userJoin.<String> get("tag"), payload.getUser().getTag()));
+		if (payload.getUser().getTag() != null && !payload.getUser().getTag().equals(""))
+			predicates.add(cb.equal(cb.upper(userJoin.<String> get("tag")), payload.getUser().getTag().toUpperCase()));
+		if (payload.getMid() != 0)
+			predicates.add(cb.equal(e.<Long> get("mid"), payload.getMid()));
+		if (payload.getTitle() != null && !payload.getTitle().equals(""))
+			predicates.add(cb.like(cb.upper(e.<String> get("title")), payload.getTitle().toUpperCase()));
+		if (payload.getBody() != null && !payload.getBody().equals(""))
+			predicates.add(cb.like(cb.upper(e.<String> get("body")), payload.getBody().toUpperCase()));
+		if (payload.getValidity() != null)
+			predicates.add(cb.greaterThanOrEqualTo(e.<Date> get("validity"), payload.getValidity()));
 		getByUser.where(cb.or(predicates.toArray(new Predicate[] {})));
 		return entityManager.createQuery(getByUser).getResultList();
+
 	}
 
 }
