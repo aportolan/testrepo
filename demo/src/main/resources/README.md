@@ -87,6 +87,3 @@ Integracijski dio kroz maven se preskače jer je resursno zahtjevan
 
 **JMeter**
 JMeter skripta se nalazi u ..src/main/resources/jmeter/jmeter_test.jmx. Scenarij je napravljen po evaluation task-u za više korisnika i više simultanih requestova 
-
-**Dodatak**
-Kod unosa novih poruka je postavljen jednostavni html input datuma. Kod unosa krivog datuma (tipa 31/02) ne provjerava validnost, već šalje null na server, pa program javi poruku da neka polja nisu popunjena, što nije istina. Potrebno samo obratiti pozornost na to.
