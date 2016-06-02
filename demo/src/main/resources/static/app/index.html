@@ -171,7 +171,7 @@
 								<td><input ng-model="searchMessage.title" /></td>
 								<td><input ng-model="searchMessage.body" /></td>
 								<td><div class="dropdown">
-										<a class="dropdown-toggle" id="dropdown2" role="button"
+										<a class="dropdown-toggle" id="dropdown1" role="button"
 											data-toggle="dropdown" data-target="#" href="#">
 											<div class="input-group">
 												<input custom-date-input type="text" class="form-control"
@@ -182,7 +182,7 @@
 										</a>
 										<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 											<datetimepicker data-ng-model="searchMessage.validity"
-												data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+												data-datetimepicker-config="{ dropdownSelector: '#dropdown1' }" />
 										</ul>
 									</div> <!-- 								<input custom-date-input --> <!-- 									ng-model="searchMessage.validity" type="datetime-local" -->
 									<!-- 									placeholder="HH:mm:ss dd.MM.yyyy" /></td> -->
@@ -276,7 +276,7 @@
 									ng-show="message.editMode == null || message.editMode == false">{{message.validity
 										| date:'HH:mm dd-MM-yyyy'}}</span>
 									<div class="dropdown" ng-show="message.editMode == true">
-										<a class="dropdown-toggle" id="dropdown2" role="button"
+										<a class="dropdown-toggle" id="dropdown3" role="button"
 											data-toggle="dropdown" data-target="#" href="#">
 											<div class="input-group">
 												<input custom-date-input type="text" class="form-control"
@@ -287,7 +287,7 @@
 										</a>
 										<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 											<datetimepicker data-ng-model="message.validity"
-												data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+												data-datetimepicker-config="{ dropdownSelector: '#dropdown3' }" />
 										</ul>
 									</div> <!-- 									<input custom-date-input ng-model="message.validity" -->
 									<!-- 									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy" -->
