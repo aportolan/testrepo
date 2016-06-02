@@ -10,15 +10,13 @@
 <link rel="stylesheet" href="static/app/styles/main.css">
 <link rel="stylesheet" href="static/bower_components/toastr/toastr.css">
 <link rel="stylesheet"
-	href="static/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
-<link rel="stylesheet"
 	href="static/bower_components/bootstrap/dist/css/bootstrap.css">
 <link rel="stylesheet"
 	href="static/bower_components/bootstrap/dist/css/bootstrap-theme.css">
 <link rel="stylesheet"
 	href="static/bower_components/components-font-awesome/css/font-awesome.css">
 <link rel="stylesheet"
-	href="static/bower_components/angular-datepicker/dist/angular-datepicker.css">
+	href="static/bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
 <!-- endbuild -->
 </head>
 <body ng-app="usermessageApp">
@@ -34,10 +32,10 @@
 						<h2>Users and messages</h2>
 						<p>First table is for users, second (hidden) table is for
 							messages. Users can be filtered, paged, created updated and
-							deleted. Red icon imports 100000 users into database. Clicking on one of the envelopes, messages grid will be
-							populated. It has the same functionalities as users grid, bur it
-							can also add one message to many users (by one of the
-							parameters).</p>
+							deleted. Red icon imports 100000 users into database. Clicking on
+							one of the envelopes, messages grid will be populated. It has the
+							same functionalities as users grid, bur it can also add one
+							message to many users (by one of the parameters).</p>
 						<p>
 							<a class="btn btn-primary btn-large"
 								href="jsondoc-ui.html?url=${jsondoc.basePath}/${project.name}/jsondoc">Docs
@@ -172,9 +170,22 @@
 								<td><input ng-model="searchMessage.mid" /></td>
 								<td><input ng-model="searchMessage.title" /></td>
 								<td><input ng-model="searchMessage.body" /></td>
-								<td><input custom-date-input
-									ng-model="searchMessage.validity" type="datetime-local"
-									placeholder="HH:mm:ss dd.MM.yyyy" /></td>
+								<td><div class="dropdown">
+										<a class="dropdown-toggle" id="dropdown2" role="button"
+											data-toggle="dropdown" data-target="#" href="#">
+											<div class="input-group">
+												<input custom-date-input type="text" class="form-control"
+													data-ng-model="searchMessage.validity""><span
+													class="input-group-addon"><i
+													class="glyphicon glyphicon-calendar"></i></span>
+											</div>
+										</a>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+											<datetimepicker data-ng-model="searchMessage.validity"
+												data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+										</ul>
+									</div> <!-- 								<input custom-date-input --> <!-- 									ng-model="searchMessage.validity" type="datetime-local" -->
+									<!-- 									placeholder="HH:mm:ss dd.MM.yyyy" /></td> -->
 							</tr>
 						</table>
 					</div>
@@ -213,8 +224,22 @@
 								<td></td>
 								<td><input ng-model="message.title" /></td>
 								<td><input ng-model="message.body" /></td>
-								<td><input custom-date-input ng-model="message.validity"
-									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy" /></td>
+								<td><div class="dropdown">
+										<a class="dropdown-toggle" id="dropdown2" role="button"
+											data-toggle="dropdown" data-target="#" href="#">
+											<div class="input-group">
+												<input custom-date-input type="text" class="form-control"
+													data-ng-model="message.validity""><span
+													class="input-group-addon"><i
+													class="glyphicon glyphicon-calendar"></i></span>
+											</div>
+										</a>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+											<datetimepicker data-ng-model="message.validity"
+												data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+										</ul>
+									</div> <!-- 								<td><input custom-date-input ng-model="message.validity" -->
+									<!-- 									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy" /></td> -->
 								<td></td>
 							</tr>
 							<tr ng-repeat="message in messages | orderBy:'mid':true">
@@ -248,10 +273,25 @@
 									<input ng-model="message.body"
 									ng-show="message.editMode == true" /></td>
 								<td><span custom-date-input
-									ng-show="message.editMode == null || message.editMode == false">{{message.validity}}</span>
-									<input custom-date-input ng-model="message.validity"
-									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy"
-									ng-show="message.editMode == true" /></td>
+									ng-show="message.editMode == null || message.editMode == false">{{message.validity
+										| date:'HH:mm dd-MM-yyyy'}}</span>
+									<div class="dropdown" ng-show="message.editMode == true">
+										<a class="dropdown-toggle" id="dropdown2" role="button"
+											data-toggle="dropdown" data-target="#" href="#">
+											<div class="input-group">
+												<input custom-date-input type="text" class="form-control"
+													data-ng-model="message.validity""><span
+													class="input-group-addon"><i
+													class="glyphicon glyphicon-calendar"></i></span>
+											</div>
+										</a>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+											<datetimepicker data-ng-model="message.validity"
+												data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+										</ul>
+									</div> <!-- 									<input custom-date-input ng-model="message.validity" -->
+									<!-- 									type="datetime-local" placeholder="HH:mm:ss dd.MM.yyyy" -->
+									<!-- 									ng-show="message.editMode == true" /> --></td>
 							</tr>
 						</table>
 					</div>
@@ -276,12 +316,14 @@
 		src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="static/bower_components/angular-touch/angular-touch.js"></script>
 	<script src="static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-	<script
-		src="static/bower_components/angular-datepicker/dist/ angular-datepicker.js"></script>
-	<script src="static/bower_components/jquery-ui/jquery-ui.js"></script>
+
 	<script src="static/bower_components/toastr/toastr.js"></script>
 	<script
 		src="static/bower_components/ng-stomp/dist/ng-stomp.standalone.min.js"></script>
+	<script src="static/bower_components/moment/moment.js"></script>
+	<script
+		src="static/bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+
 
 
 	<!-- endbower -->
