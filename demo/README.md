@@ -42,40 +42,39 @@ REST linkovi su (naravno, treba nadodati još root aplikacije http://usermessage
 
 
 Svaki **request** mora biti wrappan u objekt:
-'''
+```
 {
   "limit": 0,
   "offset": 0,
   "payload": {}
 }
-'''
+```
 **Response:**
-'''
+```
 {
   "errorMessage": "",
   "payload": {},
   "success": true
 }
-'''
-
+```
 Payload može biti :
 **User:**
-'''
+```
 {
   "messages": [],
   "name": "",
   "tag": "",
   "uid": 0
 }
-'''
+```
 **Message**
-'''
+```
 {
   "errorMessage": "",
   "payload": {},
   "success": true
 }
-'''
+```
 ...ili lista sa **User:** ili **Message** podacima.
 
 Primjeri request-ova su u datotekama unutar test resursa (...src/test/resources/files)
