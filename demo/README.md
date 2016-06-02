@@ -5,11 +5,11 @@
 
 # Manual
 
-Aplikacija se nalazi na OpenShift cloudu na ovoj [adresi](http://usermessage-aportolan.rhcloud.com/usermessage)
-Na openshift hub-u je instaliran Tomcat 8
-Serverski dio je napravljen u Spring BOOT-u (gleda na spring 4), klijentski u AngularJS-u
-Baza je In memory H2 baza (dropira se i podiže kod svakog restarta aplikacije)
-Build je na Mavenu (testirano na 3.3)
+- Aplikacija se nalazi na OpenShift cloudu na ovoj [adresi](http://usermessage-aportolan.rhcloud.com/usermessage)
+- Na openshift hub-u je instaliran Tomcat 8
+- Serverski dio je napravljen u Spring BOOT-u (gleda na spring 4), klijentski u AngularJS-u
+- Baza je In memory H2 baza (dropira se i podiže kod svakog restarta aplikacije)
+- Build je na Mavenu (testirano na 3.3)
 
 **User:** korisnik
 **Pass:** dobar dan
@@ -18,7 +18,8 @@ Svako 5 sekundi se starta CRON Job koji (po evaluation task-u) briše poruke sa 
 
 ## Klijentska funkcionalnost
 Klijentska forma se sastoji od forme pregleda korisnika i forme za pregled poruka koja se opet sastoji od dijela za pretragu i dijela za prikaz rezultata.
-Korisnička forma može dodavati nove korisnike i mijenjati i brisati stare(standardne CRUD funkcionalnosti), također ima mogućnost unosa inicijalnih korisnika . To je dogotrajnija operacija pa se to odrađuje u zasebnom procesu, a klijent prima poruke od servera o tijeku procesa putem push messaging-a preko web socket komunikacije. Svaki redak tablice korisnika ima tipku za dovlačenje njegovih poruka. 
+
+Korisnička forma može dodavati nove korisnike i mijenjati i brisati stare(standardne CRUD funkcionalnosti), također ima mogućnost unosa inicijalnih korisnika. To je dogotrajnija operacija pa se to odrađuje u zasebnom procesu, a klijent prima poruke od servera o tijeku procesa putem push messaging-a preko web socket komunikacije. Svaki redak tablice korisnika ima tipku za dovlačenje njegovih poruka. 
 
 Forma poruka ima većinu funkcionalnosti istih kao i forma korisnika (bez unosa inicijalnih korisnika), te ima mogućnost unosa 1 poruke za sve korisnike. Pritiskom te tipke se podatak iz forme za unos poruke propagira za sve korisnike
 **Prelaskom kursora preko ikona na klijentskom dijelu, može se vidjeti njihova funkcionalnost** 
