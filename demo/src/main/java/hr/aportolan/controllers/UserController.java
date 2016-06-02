@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import hr.aportolan.dao.InitDataLoader;
+import hr.aportolan.dao.MessageRepository;
 import hr.aportolan.dao.UserRepository;
+import hr.aportolan.domain.Message;
 import hr.aportolan.domain.User;
 import hr.aportolan.dto.RequestObject;
 import hr.aportolan.dto.ResponseObject;
@@ -33,9 +35,12 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private MessageRepository messageRepository;
+	@Autowired
 	private InitDataLoader initDataLoader;
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiMethod(description = "Saves user")
 	@Transactional
 	@ApiResponseObject
@@ -45,7 +50,8 @@ public class UserController {
 	}
 
 	@ApiMethod(description = "Saves multiple users")
-	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponseObject
 	public ResponseObject<VoidData> saveAll(@ApiBodyObject @RequestBody RequestObject<List<User>> ro) {
 		ro.amIValid(ValidationType.SAVE_ALL_USERS);
@@ -54,17 +60,25 @@ public class UserController {
 	}
 
 	@ApiMethod(description = "Deletes one or more users")
-	@RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
 	@ApiResponseObject
 	public ResponseObject<User> delete(@ApiBodyObject @RequestBody RequestObject<List<User>> ro) {
 		ro.amIValid(ValidationType.DELETE_USERS);
+		for (User user : ro.getPayload()) {
+			Message message = new Message();
+			message.setUser(user);
+			messageRepository.deleteByUser(message);
+
+		}
 		userRepository.delete(ro.getPayload());
 		return new ResponseObject<>(true, ro.getPayload().get(0));
 
 	}
 
-	@ApiMethod(description = "Gets users by one of the user parameters", consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiMethod(description = "Gets users by one of the user parameters", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/get", method = RequestMethod.POST)
 	@ApiResponseObject
 	public ResponseObject<List<User>> get(@ApiBodyObject @RequestBody RequestObject<User> ro) {

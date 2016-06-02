@@ -33,7 +33,8 @@ public class MessageController {
 	private MessageRepository messageRepository;
 
 	@ApiMethod(description = "Saves message by user")
-	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
 	@ApiResponseObject
 	public ResponseObject<Message> save(@ApiBodyObject @RequestBody RequestObject<Message> ro) {
@@ -43,7 +44,8 @@ public class MessageController {
 	}
 
 	@ApiMethod(description = "Saves multile messages by user")
-	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/saveAll", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponseObject
 	public ResponseObject<VoidData> saveAll(@ApiBodyObject @RequestBody RequestObject<Message> ro) {
 		ro.amIValid(ValidationType.SAVE_ALL_MESSAGES);
@@ -52,7 +54,8 @@ public class MessageController {
 	}
 
 	@ApiMethod(description = "Deletes message")
-	@RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
 	@ApiResponseObject
 	public ResponseObject<Message> delete(@ApiBodyObject @RequestBody RequestObject<List<Message>> ro) {
@@ -68,12 +71,13 @@ public class MessageController {
 	}
 
 	@ApiMethod(description = "Gets messages by user id or name or tag")
-	@RequestMapping(value = "/get", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponseObject
 	public ResponseObject<List<Message>> getByUser(@ApiBodyObject @RequestBody RequestObject<Message> ro)
 			throws JsonProcessingException {
 		ro.amIValid(ValidationType.GET_BY_USER_MESSAGES);
-		return new ResponseObject<>(true, messageRepository.getByUser(ro.getPayload()));
+		return new ResponseObject<>(true, messageRepository.getByUser(ro.getPayload(), ro.getOffset(), ro.getLimit()));
 
 	}
 }

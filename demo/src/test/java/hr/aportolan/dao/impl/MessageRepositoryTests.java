@@ -45,7 +45,7 @@ public class MessageRepositoryTests {
 		message.setMid(1);
 		message.setUser(new User());
 		message.getUser().setTag("123");
-		messageRepository.getByUser(message);
+		messageRepository.getByUser(message, 0, 1);
 	}
 
 	@Test

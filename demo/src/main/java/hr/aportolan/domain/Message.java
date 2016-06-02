@@ -66,7 +66,6 @@ public class Message {
 	@JsonDeserialize(using = IsoDateDeserializer.class)
 	@Column(nullable = false, unique = false)
 	private Date validity;
-
 	@ManyToOne
 	@JoinColumn(name = "uid")
 	private User user;

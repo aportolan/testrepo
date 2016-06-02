@@ -140,7 +140,7 @@ angular.module('usermessageApp')
 		messageFactory.saveMessages($scope.message).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.saveAllMessages = function () {
-		$scope.message.user = $scope.selectedUser;
+		$scope.message.user = {};
 		messageFactory.saveAllMessages($scope.message).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.updateMessages = function (message) {
@@ -151,7 +151,7 @@ angular.module('usermessageApp')
 		messageFactory.deleteMessages(messageArray).success(successPostCallbackMessages).error(errorCallback);
 	    };
 	    $scope.refreshMessages = function () {
-		$scope.searchMessage == null
+		if($scope.searchMessage == null)
 			$scope.searchMessage = {user:{uid:$scope.selectedUser.uid}};
 		else
 			$scope.searchMessage.user={uid:$scope.selectedUser.uid};

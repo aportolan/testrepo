@@ -95,7 +95,7 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 	}
 
 	@Override
-	public List<Message> getByUser(Message payload) {
+	public List<Message> getByUser(Message payload, int offset, int limit) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
@@ -110,13 +110,13 @@ public class MessageRepositoryImpl implements CustomMessageRepository {
 		if (payload.getMid() != 0)
 			predicates.add(cb.equal(e.<Long> get("mid"), payload.getMid()));
 		if (payload.getTitle() != null && !payload.getTitle().equals(""))
-			predicates.add(cb.like(cb.upper(e.<String> get("title")), payload.getTitle().toUpperCase()));
+			predicates.add(cb.like(cb.upper(e.<String> get("title")), payload.getTitle().toUpperCase() + "%"));
 		if (payload.getBody() != null && !payload.getBody().equals(""))
-			predicates.add(cb.like(cb.upper(e.<String> get("body")), payload.getBody().toUpperCase()));
+			predicates.add(cb.like(cb.upper(e.<String> get("body")), payload.getBody().toUpperCase() + "%"));
 		if (payload.getValidity() != null)
 			predicates.add(cb.greaterThanOrEqualTo(e.<Date> get("validity"), payload.getValidity()));
-		getByUser.where(cb.or(predicates.toArray(new Predicate[] {})));
-		return entityManager.createQuery(getByUser).getResultList();
+		getByUser.where(cb.and(predicates.toArray(new Predicate[] {})));
+		return entityManager.createQuery(getByUser).setFirstResult(offset).setMaxResults(limit).getResultList();
 
 	}
 

@@ -114,7 +114,7 @@ public class InitDataLoaderImpl implements InitDataLoader {
 		if (rownum % 5000 == 0) {
 			double percentage = (double) rownum / (double) userNumber.getValue() * 100;
 			template.convertAndSend("/messageTopic/initLoad",
-					"Loaded " + rownum + " of " + userNumber.getValue() + "(" + percentage + ") users!");
+					"Loaded " + rownum + " of " + userNumber.getValue() + "(" + percentage + "%) users!");
 		}
 		LOGGER.debug("Data:{} {} {}", name, lastName, rownum);
 		User user = new User(

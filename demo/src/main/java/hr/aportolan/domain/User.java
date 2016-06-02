@@ -49,7 +49,7 @@ public class User {
 	@Column(nullable = false, unique = false)
 	private String tag;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Message> messages;
 
 	public long getUid() {

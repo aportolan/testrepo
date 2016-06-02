@@ -33,7 +33,11 @@ public interface CustomMessageRepository {
 	 * 
 	 * @param payload
 	 *            {@link Message}
+	 * @param offset
+	 *            start row
+	 * @param limit
+	 *            number of possible rows returned
 	 * @return {@link List} of {@link Message}
 	 */
-	List<Message> getByUser(Message payload);
+	List<Message> getByUser(Message payload, int offset, int limit);
 }
