@@ -82,7 +82,7 @@ Payload može biti :
 
 Primjeri request-ova su u datotekama unutar test resursa (...src/test/resources/files)
 
-Isto tako opis REST dijela se nalazi na [ovoj lokaciji](http://usermessage-aportolan.rhcloud.com/usermessage/jsondoc-ui.html?url=http://localhost:8400/usermessage/jsondoc#)
+Isto tako opis REST dijela se nalazi na [ovoj lokaciji](http://usermessage-aportolan.rhcloud.com/usermessage/jsondoc-ui.html?url=http://usermessage-aportolan.rhcloud.com/usermessage/jsondoc#)
 
 **Testovi**
 Integracijski dio kroz maven se preskače jer je resursno zahtjevan
